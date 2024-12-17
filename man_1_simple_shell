@@ -1,1 +1,5 @@
-.sh
+.TH SIMPLE_SHELL 1 "17/12/2024" "1.0" "Simple Shell Manual"
+.SH NAME
+simple_shell \- A simple Unix shell implementation.
+.SH SYNOPSIS
+
