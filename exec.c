@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 /**
  * parse_cmd - parse the string and execute the command
  *
