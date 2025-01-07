@@ -1,5 +1,13 @@
-.TH SIMPLE_SHELL 1 "17/12/2024" "1.0" "Simple Shell Manual"
+.TH SIMPLE_SHELL 1 "December 2024" "1.0" "Simple Shell Manual Page"
+
 .SH NAME
-simple_shell \- A simple Unix shell implementation.
+simple_shell \- A simple Unix shell implementation for command execution
+
 .SH SYNOPSIS
+
+
+.SH DESCRIPTION
+.B simple_shell
+is a custom shell designed to mimic basic shell fonctionallities. It allows users to execute commands, handle input/output redirection, and manage processes.
+
 
