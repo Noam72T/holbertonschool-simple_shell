@@ -35,7 +35,7 @@ int main(void)
 		execute_command(line);
 	}
 	free(line);
-	return (0);
+	return (1);
 }
 
 /**
