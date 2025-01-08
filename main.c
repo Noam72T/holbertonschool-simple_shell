@@ -7,8 +7,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-
-
 #define BUFFER_SIZE 1024
 
 void prompt(void);
@@ -87,14 +85,14 @@ char *find_command_path(char *command)
         
         if (access(full_path, X_OK) == 0)
         {
-            return full_path; 
+            return full_path; // Commande trouvée
         }
         
         token = strtok(NULL, ":");
     }
     
     free(full_path);
-    return NULL; 
+    return NULL; // Commande non trouvée
 }
 
 /**
@@ -139,8 +137,8 @@ void execute_command(char *line)
         /* Tentative d'exécution avec execve */
         if (execve(command_path, argv, environ) == -1)
         {
-            /* Commande introuvable, afficher un message d'erreur */
-            perror(command_path);
+            /* Affichage de l'erreur spécifique */
+            perror("execve failed");
             _exit(EXIT_FAILURE); /* Exit child process */
         }
     }
@@ -149,8 +147,8 @@ void execute_command(char *line)
         waitpid(pid, &status, 0); /* Wait for child process to finish */
     }
 
-    if (command_path != line) 
-        free(command_path);  
+    if (command_path != line)  // Si nous avons trouvé un chemin via PATH
+        free(command_path);  // Libère le chemin alloué
 }
 
 /**
