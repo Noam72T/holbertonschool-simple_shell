@@ -2,7 +2,6 @@
 
 #define BUFFER_SIZE 1024
 
-extern char **environ;
 
 void prompt(void);
 ssize_t read_input(char **line, size_t *len);
