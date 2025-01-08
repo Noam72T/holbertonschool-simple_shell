@@ -10,4 +10,4 @@
 extern char **environ;
 ssize_t get_input(char **line);
 
-#endif /* MAIN_H */
+#endif 
