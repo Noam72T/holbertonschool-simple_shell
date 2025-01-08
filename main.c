@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/wait.h>
 #include "main.h"
 
 void prompt(void)
@@ -6,9 +11,10 @@ void prompt(void)
     fflush(stdout);
 }
 
-ssize_t get_input(char **line, size_t *len)
+ssize_t get_input(char **line)
 {
-    return getline(line, len, stdin);
+    size_t len = 0;
+    return getline(line, &len, stdin);
 }
 
 void execute_command(char *line)
@@ -29,13 +35,12 @@ void execute_command(char *line)
 int main(void)
 {
     char *line = NULL;
-    size_t len = 0;
     ssize_t read;
 
     while (1)
     {
         prompt();
-        read = get_input(&line, &len);
+        read = get_input(&line);
         if (read == -1)
         {
             if (feof(stdin))
