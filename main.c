@@ -125,6 +125,8 @@ void execute_command(char *line)
         }
     }
 
+    printf("Trying to execute: %s\n", command_path); 
+
     pid = fork();
     if (pid == -1)
     {
@@ -137,7 +139,6 @@ void execute_command(char *line)
         /* Tentative d'exécution avec execve */
         if (execve(command_path, argv, environ) == -1)
         {
-            /* Affichage de l'erreur spécifique */
             perror("execve failed");
             _exit(EXIT_FAILURE); /* Exit child process */
         }
@@ -150,7 +151,6 @@ void execute_command(char *line)
     if (command_path != line)  
         free(command_path);  
 }
-
 /**
  * trim_whitespace - Supprime les espaces en début et en fin de chaîne
  * @str: La chaîne à nettoyer
