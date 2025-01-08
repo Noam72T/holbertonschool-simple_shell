@@ -2,10 +2,10 @@
 
 #define BUFFER_SIZE 1024
 
-
 void prompt(void);
 ssize_t read_input(char **line, size_t *len);
 void execute_command(char *line);
+char *trim_whitespace(char *str);
 
 /**
  * main - Function main interpréteur de commande
@@ -21,13 +21,17 @@ int main(void)
 	{
 		prompt();
 		read = read_input(&line, &len);
-		if (read == -1)
+		if (read == -1) 
 		{
 			printf("\n");
 			break;
 		}
-		if (strlen(line) == 0)
+
+		
+		line = trim_whitespace(line);
+		if (strlen(line) == 0) 
 			continue;
+
 		execute_command(line);
 	}
 	free(line);
@@ -45,7 +49,7 @@ void prompt(void)
 /**
  * read_input - Li les input
  * @line: Pointeur vers le buffer
- * @len: Pointeur vers la taille buffer
+ * @len: Pointeur vers la taille buffer 
  * Return: Nombre de caractères lus, ou -1 sur EOF
  */
 ssize_t read_input(char **line, size_t *len)
@@ -63,7 +67,6 @@ void execute_command(char *line)
 	int status;
 	char *argv[2];
 
-	line[strcspn(line, "\n")] = '\0';
 	argv[0] = line;
 	argv[1] = NULL;
 
@@ -85,4 +88,32 @@ void execute_command(char *line)
 	{
 		waitpid(pid, &status, 0);
 	}
+}
+
+/**
+ * trim_whitespace - Supprime les espaces en début et en fin de chaîne
+ * @str: La chaîne à nettoyer
+ * Return: Pointeur vers la chaîne nettoyée
+ */
+char *trim_whitespace(char *str)
+{
+	char *end;
+
+
+	while (*str == ' ')
+		str++;
+
+	
+	if (*str == '\0')
+		return (str);
+
+	
+	end = str + strlen(str) - 1;
+	while (end > str && *end == ' ')
+		end--;
+
+	
+	*(end + 1) = '\0';
+
+	return (str);
 }
