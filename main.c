@@ -3,7 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #include "main.h"
+
+
 
 void prompt(void)
 {
@@ -22,7 +25,10 @@ void execute_command(char *line)
     pid_t pid = fork();
     if (pid == 0)
     {
-        if (execve(line, (char *[]){line, NULL}, environ) == -1)
+        char *argv[2];  
+        argv[0] = line;  
+        argv[1] = NULL;   
+        if (execve(line, argv, environ) == -1)
         {
             perror("./shell");
             exit(1);
