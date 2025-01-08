@@ -2,10 +2,12 @@
 
 #define BUFFER_SIZE 1024
 
+
 void prompt(void);
 ssize_t read_input(char **line, size_t *len);
 void execute_command(char *line);
 char *trim_whitespace(char *str);
+char *resolve_command(char *command);
 
 /**
  * main - Function main interpréteur de commande
@@ -27,7 +29,7 @@ int main(void)
 			break;
 		}
 
-		
+
 		line = trim_whitespace(line);
 		if (strlen(line) == 0) 
 			continue;
@@ -35,11 +37,11 @@ int main(void)
 		execute_command(line);
 	}
 	free(line);
-	return (1);
+	return (0);
 }
 
 /**
- * prompt - Prompt du shell
+ * prompt - Affiche le prompt du shell
  */
 void prompt(void)
 {
@@ -47,10 +49,10 @@ void prompt(void)
 }
 
 /**
- * read_input - Li les input
- * @line: Pointeur vers le buffer
- * @len: Pointeur vers la taille buffer 
- * Return: Nombre de caractères lus, ou -1 sur EOF
+ * read_input - Lis l'entrée utilisateur
+ * @line: Pointeur vers le buffer de ligne
+ * @len: Taille du buffer
+ * Return: Nombre de caractères lus ou -1 sur EOF
  */
 ssize_t read_input(char **line, size_t *len)
 {
@@ -58,62 +60,101 @@ ssize_t read_input(char **line, size_t *len)
 }
 
 /**
- * execute_command - Exécute une commande en utilisant execve
- * @line: La commande d'éxécution
+ * execute_command - Exécute une commande via execve
+ * @line: La commande à exécuter
  */
 void execute_command(char *line)
 {
 	pid_t pid;
 	int status;
 	char *argv[2];
+	char *command;
 
-	argv[0] = line;
+	
+	command = resolve_command(line);
+	if (command == NULL)
+	{
+		fprintf(stderr, "%s: command not found\n", line);
+		return;
+	}
+
+	argv[0] = command;
 	argv[1] = NULL;
 
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
+		free(command);
 		return;
 	}
-	if (pid == 0)
+	if (pid == 0) 
 	{
 		if (execve(argv[0], argv, environ) == -1)
 		{
 			perror(argv[0]);
+			free(command);
 			exit(EXIT_FAILURE);
 		}
 	}
-	else
+	else 
 	{
 		waitpid(pid, &status, 0);
+		free(command);
 	}
 }
 
 /**
  * trim_whitespace - Supprime les espaces en début et en fin de chaîne
- * @str: La chaîne à nettoyer
+ * @str: Chaîne à nettoyer
  * Return: Pointeur vers la chaîne nettoyée
  */
 char *trim_whitespace(char *str)
 {
 	char *end;
 
-
-	while (*str == ' ')
+	while (*str == ' ') 
 		str++;
 
-	
 	if (*str == '\0')
 		return (str);
 
-	
 	end = str + strlen(str) - 1;
-	while (end > str && *end == ' ')
+	while (end > str && *end == ' ') 
 		end--;
 
-	
 	*(end + 1) = '\0';
-
 	return (str);
+}
+
+/**
+ * resolve_command - Trouve le chemin complet d'une commande
+ * @command: Commande à résoudre
+ * Return: Chemin absolu ou NULL si introuvable
+ */
+char *resolve_command(char *command)
+{
+	char *path = getenv("PATH");
+	char *token, *full_path;
+	size_t len;
+
+	if (path == NULL)
+		return (NULL);
+
+	token = strtok(path, ":");
+	while (token != NULL)
+	{
+		len = strlen(token) + strlen(command) + 2;
+		full_path = malloc(len);
+		if (full_path == NULL)
+			return (NULL);
+
+		sprintf(full_path, "%s/%s", token, command);
+		if (access(full_path, X_OK) == 0)
+			return (full_path);
+
+		free(full_path);
+		token = strtok(NULL, ":");
+	}
+	return (NULL);
 }
