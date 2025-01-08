@@ -45,7 +45,7 @@ void prompt(void)
 /**
  * read_input - Li les input
  * @line: Pointeur vers le buffer
- * @len: Pointeur vers la taille buffer 
+ * @len: Pointeur vers la taille buffer
  * Return: Nombre de caractères lus, ou -1 sur EOF
  */
 ssize_t read_input(char **line, size_t *len)
