@@ -77,25 +77,20 @@ void execute_command(char *line)
     argv[0] = line;
     argv[1] = NULL;
 
-    /* Vérifier l'existence de la commande avant de tenter de l'exécuter */
-    if (access(argv[0], F_OK) == -1)
-    {
-        perror("./shell");
-        return; /* Command not found */
-    }
-
     pid = fork();
     if (pid == -1)
     {
         perror("fork");
         return;
     }
+
     if (pid == 0)
     {
+        /* Tentative d'exécution avec execve */
         if (execve(argv[0], argv, environ) == -1)
         {
-            /* Command not found */
-            perror("./shell");
+            /* Commande introuvable, afficher un message d'erreur */
+            perror(argv[0]);
             _exit(EXIT_FAILURE); /* Exit child process */
         }
     }
