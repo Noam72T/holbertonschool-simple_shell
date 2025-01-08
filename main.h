@@ -12,9 +12,8 @@
 extern char **environ;
 
 void prompt(void);
-ssize_t read_input(char **line, size_t *len);
+ssize_t get_input(char **line, size_t *len)
 void execute_command(char *line);
-char *trim_whitespace(char *str);
-char *resolve_command(char *command);
+
 
 #endif
