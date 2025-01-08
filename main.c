@@ -85,14 +85,14 @@ char *find_command_path(char *command)
         
         if (access(full_path, X_OK) == 0)
         {
-            return full_path; // Commande trouvée
+            return full_path;
         }
         
         token = strtok(NULL, ":");
     }
     
     free(full_path);
-    return NULL; // Commande non trouvée
+    return NULL; 
 }
 
 /**
@@ -147,8 +147,8 @@ void execute_command(char *line)
         waitpid(pid, &status, 0); /* Wait for child process to finish */
     }
 
-    if (command_path != line)  // Si nous avons trouvé un chemin via PATH
-        free(command_path);  // Libère le chemin alloué
+    if (command_path != line)  
+        free(command_path);  
 }
 
 /**
