@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/wait.h>
 
+extern char **environ;
 ssize_t get_input(char **line);
 
 #endif /* MAIN_H */
