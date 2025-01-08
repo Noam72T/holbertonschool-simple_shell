@@ -3,9 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <unistd.h>
 #include "main.h"
-
 
 
 void prompt(void)
@@ -22,20 +20,37 @@ ssize_t get_input(char **line)
 
 void execute_command(char *line)
 {
+    char *argv[100];
     pid_t pid = fork();
+
     if (pid == 0)
     {
-        char *argv[2];  
-        argv[0] = line;  
-        argv[1] = NULL;   
-        if (execve(line, argv, environ) == -1)
+        char *token = strtok(line, " ");
+        int i = 0;
+
+        while (token != NULL)
         {
-            perror("./shell");
+            argv[i++] = token;
+            token = strtok(NULL, " ");
+        }
+
+        argv[i] = NULL;
+
+        if (execve(argv[0], argv, environ) == -1)
+        {
+            perror("./simple_shell");
             exit(1);
         }
     }
+    else if (pid < 0)
+    {
+        perror("fork");
+        exit(1);
+    }
     else
+    {
         wait(NULL);
+    }
 }
 
 int main(void)
@@ -47,18 +62,27 @@ int main(void)
     {
         prompt();
         read = get_input(&line);
+
         if (read == -1)
         {
             if (feof(stdin))
+            {
                 break;
+            }
             perror("getline");
             continue;
         }
+
         line[strcspn(line, "\n")] = '\0';
+
         if (strlen(line) == 0)
+        {
             continue;
+        }
+
         execute_command(line);
     }
+
     free(line);
     return 0;
 }
