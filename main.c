@@ -5,6 +5,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <errno.h>
+
 
 
 #define BUFFER_SIZE 1024
@@ -13,6 +15,7 @@ void prompt(void);
 ssize_t read_input(char **line, size_t *len);
 void execute_command(char *line);
 char *trim_whitespace(char *str);
+char *find_command_path(char *command);
 
 /**
  * main - Fonction principale de l'interpréteur de commande
@@ -65,6 +68,36 @@ ssize_t read_input(char **line, size_t *len)
 }
 
 /**
+ * find_command_path - Cherche le chemin de la commande dans les répertoires PATH
+ * @command: La commande entrée
+ * Return: Le chemin absolu de la commande ou NULL si non trouvée
+ */
+char *find_command_path(char *command)
+{
+    char *path = getenv("PATH");
+    char *token = strtok(path, ":");
+    char *full_path = malloc(BUFFER_SIZE);
+    
+    if (!full_path)
+        return NULL;
+
+    while (token != NULL)
+    {
+        snprintf(full_path, BUFFER_SIZE, "%s/%s", token, command);
+        
+        if (access(full_path, X_OK) == 0)
+        {
+            return full_path; // Commande trouvée
+        }
+        
+        token = strtok(NULL, ":");
+    }
+    
+    free(full_path);
+    return NULL; // Commande non trouvée
+}
+
+/**
  * execute_command - Exécute une commande en utilisant execve
  * @line: La commande à exécuter
  */
@@ -73,9 +106,26 @@ void execute_command(char *line)
     pid_t pid;
     int status;
     char *argv[2];
+    char *command_path;
 
     argv[0] = line;
     argv[1] = NULL;
+
+    /* Si le chemin commence par '/', c'est un chemin absolu */
+    if (line[0] == '/')
+    {
+        command_path = line;
+    }
+    else
+    {
+        /* Cherche le chemin absolu dans $PATH */
+        command_path = find_command_path(line);
+        if (!command_path)
+        {
+            fprintf(stderr, "%s: command not found\n", line);
+            return;
+        }
+    }
 
     pid = fork();
     if (pid == -1)
@@ -87,10 +137,10 @@ void execute_command(char *line)
     if (pid == 0)
     {
         /* Tentative d'exécution avec execve */
-        if (execve(argv[0], argv, environ) == -1)
+        if (execve(command_path, argv, environ) == -1)
         {
             /* Commande introuvable, afficher un message d'erreur */
-            perror(argv[0]);
+            perror(command_path);
             _exit(EXIT_FAILURE); /* Exit child process */
         }
     }
@@ -98,6 +148,9 @@ void execute_command(char *line)
     {
         waitpid(pid, &status, 0); /* Wait for child process to finish */
     }
+
+    if (command_path != line)  // Si nous avons trouvé un chemin via PATH
+        free(command_path);  // Libère le chemin alloué
 }
 
 /**
