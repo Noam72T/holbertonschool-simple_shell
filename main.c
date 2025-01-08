@@ -38,7 +38,7 @@ void execute_command(char *line)
 
         if (execve(argv[0], argv, environ) == -1)
         {
-            perror("./simple_shell");
+            perror("./hsh");
             exit(1);
         }
     }
