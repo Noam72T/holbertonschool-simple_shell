@@ -1,16 +1,16 @@
 #include "main.h"
 
-
 #define BUFFER_SIZE 1024
+
+extern char **environ;
 
 void prompt(void);
 ssize_t read_input(char **line, size_t *len);
 void execute_command(char *line);
 
 /**
- * main - Simple UNIX command line interpreter
- *
- * Return: Always 0 on success, or 1 on failure.
+ * main - Function main interpréteur de commande
+ * Return: 0 si bon, 1 si erreur
  */
 int main(void)
 {
@@ -36,7 +36,7 @@ int main(void)
 }
 
 /**
- * prompt - Displays the shell prompt
+ * prompt - Prompt du shell
  */
 void prompt(void)
 {
@@ -44,11 +44,10 @@ void prompt(void)
 }
 
 /**
- * read_input - Reads input from the user
- * @line: Pointer to the input buffer
- * @len: Pointer to the buffer size
- *
- * Return: Number of characters read, or -1 on EOF
+ * read_input - Li les input
+ * @line: Pointeur vers le buffer
+ * @len: Pointeur vers la taille buffer 
+ * Return: Nombre de caractères lus, ou -1 sur EOF
  */
 ssize_t read_input(char **line, size_t *len)
 {
@@ -56,8 +55,8 @@ ssize_t read_input(char **line, size_t *len)
 }
 
 /**
- * execute_command - Executes a command using execve
- * @line: The command to execute
+ * execute_command - Exécute une commande en utilisant execve
+ * @line: La commande d'éxécution
  */
 void execute_command(char *line)
 {
