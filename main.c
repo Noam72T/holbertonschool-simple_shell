@@ -10,8 +10,8 @@ char *trim_whitespace(char *str);
 char *resolve_command(char *command);
 
 /**
- * main - Function main interpréteur de commande
- * Return: 0 si bon, 1 si erreur
+ * main - Interpréteur de commandes simple
+ * Return: 0 si bon, 1 en cas d'erreur
  */
 int main(void)
 {
@@ -23,15 +23,14 @@ int main(void)
 	{
 		prompt();
 		read = read_input(&line, &len);
-		if (read == -1) 
+		if (read == -1) /* Gestion EOF */
 		{
-			printf("\n");
+			write(STDOUT_FILENO, "\n", 1);
 			break;
 		}
 
-
 		line = trim_whitespace(line);
-		if (strlen(line) == 0) 
+		if (line[0] == '\0') /* Ligne vide, continuer */
 			continue;
 
 		execute_command(line);
@@ -41,11 +40,11 @@ int main(void)
 }
 
 /**
- * prompt - Affiche le prompt du shell
+ * prompt - Affiche le prompt
  */
 void prompt(void)
 {
-	printf("#cisfun$ ");
+	write(STDOUT_FILENO, "#cisfun$ ", 9);
 }
 
 /**
@@ -70,11 +69,12 @@ void execute_command(char *line)
 	char *argv[2];
 	char *command;
 
-	
+	/* Résolution de la commande */
 	command = resolve_command(line);
 	if (command == NULL)
 	{
-		fprintf(stderr, "%s: command not found\n", line);
+		write(STDERR_FILENO, line, strlen(line));
+		write(STDERR_FILENO, ": command not found\n", 20);
 		return;
 	}
 
@@ -88,7 +88,7 @@ void execute_command(char *line)
 		free(command);
 		return;
 	}
-	if (pid == 0) 
+	if (pid == 0) /* Processus enfant */
 	{
 		if (execve(argv[0], argv, environ) == -1)
 		{
@@ -97,7 +97,7 @@ void execute_command(char *line)
 			exit(EXIT_FAILURE);
 		}
 	}
-	else 
+	else /* Processus parent */
 	{
 		waitpid(pid, &status, 0);
 		free(command);
@@ -105,26 +105,27 @@ void execute_command(char *line)
 }
 
 /**
- * trim_whitespace - Supprime les espaces en début et en fin de chaîne
+ * trim_whitespace - Supprime les espaces en début et fin de chaîne
  * @str: Chaîne à nettoyer
- * Return: Pointeur vers la chaîne nettoyée
+ * Return: Chaîne nettoyée
  */
 char *trim_whitespace(char *str)
 {
+	char *start = str;
 	char *end;
 
-	while (*str == ' ') 
-		str++;
+	while (*start == ' ')
+		start++;
 
-	if (*str == '\0')
-		return (str);
+	if (*start == '\0')
+		return (start);
 
-	end = str + strlen(str) - 1;
-	while (end > str && *end == ' ') 
+	end = start + strlen(start) - 1;
+	while (end > start && *end == ' ')
 		end--;
 
 	*(end + 1) = '\0';
-	return (str);
+	return (start);
 }
 
 /**
