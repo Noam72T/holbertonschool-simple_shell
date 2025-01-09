@@ -24,10 +24,7 @@ int main(int ac, char **av, char **env)
 
         read_size = getline(&input, &input_size, stdin);
         if (read_size == -1)
-        {
-            printf("\n");
             break;
-        }
 
         if (input[read_size - 1] == '\n')
             input[read_size - 1] = '\0';
