@@ -54,7 +54,6 @@ void free_args(char **args)
  * get_command_path - Gets the full path of a command
  * @command: The command to find
  * @env: The environment variables
- *
  * Return: Full path of the command or NULL if not found
  */
 char *get_command_path(char *command, char **env)
