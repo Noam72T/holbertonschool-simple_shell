@@ -110,3 +110,4 @@ char *get_command_path(char *command, char **env)
     free(path_copy);
     return (NULL);
 }
+
