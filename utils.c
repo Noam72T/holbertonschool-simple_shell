@@ -49,6 +49,7 @@ void free_args(char **args)
     }
     free(args);
 }
+
 /**
  * print_env - Prints the current environment variables
  * @env: Array of environment variables
@@ -57,9 +58,13 @@ void print_env(char **env)
 {
     int i = 0;
 
+    if (!env)
+        return;
+
     while (env[i])
     {
-        printf("%s\n", env[i]);
+        write(STDOUT_FILENO, env[i], strlen(env[i]));
+        write(STDOUT_FILENO, "\n", 1);
         i++;
     }
 }
