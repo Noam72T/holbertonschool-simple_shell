@@ -20,7 +20,7 @@ int main(int ac, char **av, char **env)
     while (1)
     {
         if (isatty(STDIN_FILENO))
-            write(STDOUT_FILENO, "$ ", 2);
+            write(STDOUT_FILENO, "uwu:) ", 6);
 
         read_size = getline(&input, &input_size, stdin);
         if (read_size == -1)
