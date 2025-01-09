@@ -25,6 +25,13 @@ void execute_command(char *command, char **env)
         exit(0);
     }
 
+    if (strcmp(args[0], "env") == 0)
+    {
+        print_env(env);
+        free_args(args);
+        return;
+    }
+
     path = get_command_path(args[0], env);
     if (!path)
     {
