@@ -5,7 +5,7 @@
  * @command: The command to execute
  * @env: The environment variables
  */
-void execute_command(char *command, char **env)
+void execute_command(char *command, char **env, char *name)
 {
     char **args, *path;
     pid_t child_pid;
@@ -35,7 +35,7 @@ void execute_command(char *command, char **env)
     path = get_command_path(args[0], env);
     if (!path)
     {
-        fprintf(stderr, "Command not found: %s\n", args[0]);
+        fprintf(stderr, "%s :Command not found: %s\n", name, args[0]);
         free_args(args);
         return;
     }
@@ -43,7 +43,7 @@ void execute_command(char *command, char **env)
     child_pid = fork();
     if (child_pid == -1)
     {
-        perror("fork");
+        perror(name);
         free_args(args);
         free(path);
         return;
@@ -53,7 +53,7 @@ void execute_command(char *command, char **env)
         /* In the child process */
         if (execve(path, args, env) == -1)
         {
-            perror("execve");
+            perror(name);
             free(path);
             free_args(args);
             exit(EXIT_FAILURE);

@@ -15,7 +15,6 @@ int main(int ac, char **av, char **env)
     ssize_t read_size;
 
     (void)ac;
-    (void)av;
 
     while (1)
     {
@@ -35,7 +34,7 @@ int main(int ac, char **av, char **env)
             exit(0);
         }
 
-        execute_command(input, env);
+        execute_command(input, env, av[0]);
     }
 
     free(input);
