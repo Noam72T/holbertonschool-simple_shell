@@ -18,17 +18,17 @@ void execute_command(char *command, char **env)
         return;
     }
 
-    /* Check for the built-in exit command */
+    /* Check if the command is "exit" */
     if (strcmp(args[0], "exit") == 0)
     {
         free_args(args);
-        exit(0); // Exit the shell
+        exit(0);
     }
 
     path = get_command_path(args[0], env);
     if (!path)
     {
-        fprintf(stderr, "Error: Command not found: %s\n", args[0]);
+        fprintf(stderr, "Command not found: %s\n", args[0]);
         free_args(args);
         return;
     }
@@ -43,7 +43,7 @@ void execute_command(char *command, char **env)
     }
     if (child_pid == 0)
     {
-        /* In child process */
+        /* In the child process */
         if (execve(path, args, env) == -1)
         {
             perror("execve");
@@ -54,7 +54,7 @@ void execute_command(char *command, char **env)
     }
     else
     {
-        /* In parent process */
+        /* In the parent process */
         wait(&status);
     }
 
