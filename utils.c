@@ -3,7 +3,6 @@
 /**
  * tokenize_input - Splits the input into tokens
  * @input: The input string
- *
  * Return: Array of strings (tokens)
  */
 char **tokenize_input(char *input)
