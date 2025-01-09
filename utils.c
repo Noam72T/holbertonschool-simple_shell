@@ -109,3 +109,17 @@ char *get_command_path(char *command, char **env)
     return (NULL);
 }
 
+/**
+ * print_env - Prints the current environment variables
+ * @env: The environment variables
+ */
+void print_env(char **env)
+{
+    int i = 0;
+
+    while (env[i])
+    {
+        printf("%s\n", env[i]);
+        i++;
+    }
+}
