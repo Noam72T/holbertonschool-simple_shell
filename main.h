@@ -15,5 +15,6 @@ void execute_command(char *command, char **env);
 char **tokenize_input(char *input);
 void free_args(char **args);
 char *get_command_path(char *command, char **env);
+void print_env(char **env);
 
 #endif
