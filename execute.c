@@ -18,6 +18,13 @@ void execute_command(char *command, char **env)
         return;
     }
 
+    /* Check if the command is "exit" */
+    if (strcmp(args[0], "exit") == 0)
+    {
+        free_args(args);
+        exit(0);
+    }
+
     path = get_command_path(args[0], env);
     if (!path)
     {
@@ -36,6 +43,7 @@ void execute_command(char *command, char **env)
     }
     if (child_pid == 0)
     {
+        /* In the child process */
         if (execve(path, args, env) == -1)
         {
             perror("execve");
@@ -45,7 +53,10 @@ void execute_command(char *command, char **env)
         }
     }
     else
+    {
+        /* In the parent process */
         wait(&status);
+    }
 
     free_args(args);
     free(path);
