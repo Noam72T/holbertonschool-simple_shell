@@ -26,7 +26,7 @@ int main(int ac, char **av, char **env)
         if (read_size == -1)
         {
             printf("\n");
-            exit(0);
+            break;
         }
 
         if (input[read_size - 1] == '\n')
