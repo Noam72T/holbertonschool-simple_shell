@@ -1,6 +1,6 @@
 ## PROJECT : SIMPLE SHELL
 
-Welcome to our Simple Shell Project! This is a basic Unix-like shell implementation written in C
+Welcome to our Simple Shell Project! This is a basic Unix-like shell implementation written in C.
 
 ## Description
 
