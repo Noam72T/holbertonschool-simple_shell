@@ -8,11 +8,10 @@
  */
 void execute_fork(char **args, char **env, char *name)
 {
-    char *path;
+    char *path = get_command_path(args[0], env);
     pid_t child_pid;
     int status;
 
-    path = get_command_path(args[0], env);
     if (!path)
     {
         fprintf(stderr, "%s :Command not found: %s\n", name, args[0]);
@@ -29,23 +28,15 @@ void execute_fork(char **args, char **env, char *name)
         return;
     }
 
-    if (child_pid == 0)
+    if (child_pid == 0 && execve(path, args, env) == -1)
     {
-        /* In the child process */
-        if (execve(path, args, env) == -1)
-        {
-            perror(name);
-            free(path);
-            free_args(args);
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        /* In the parent process */
-        wait(&status);
+        perror(name);
+        free(path);
+        free_args(args);
+        exit(EXIT_FAILURE);
     }
 
+    wait(&status);
     free_args(args);
     free(path);
 }
