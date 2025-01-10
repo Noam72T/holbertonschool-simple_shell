@@ -17,4 +17,4 @@ void free_args(char **args);
 char *get_command_path(char *command, char **env);
 void print_env(char **env);
 
-#endif
+#endif /* SHELL_H */
