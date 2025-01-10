@@ -1,13 +1,116 @@
-.TH SIMPLE_SHELL 1 "December 2024" "1.0" "Simple Shell Manual Page"
-
+.TH SIMPLE_SHELL 1 "10/01/2025" "1.0" "Simple Shell Manual"
 .SH NAME
-simple_shell \- A simple Unix shell implementation for command execution
-
+simple_shell \- A simple Unix shell implementation.
 .SH SYNOPSIS
-
-
+.B simple_shell
+.br
+.B ./simple_shell
+.br
 .SH DESCRIPTION
 .B simple_shell
-is a custom shell designed to mimic basic shell fonctionallities. It allows users to execute commands, handle input/output redirection, and manage processes.
-
+is a basic command-line interpreter implemented in C. It replicates essential features of a Unix shell, allowing users to execute commands, manage processes, and navigate the file system.
+The shell operates in both interactive and non-interactive modes, handling built-in commands like \fBcd\fR and \fBpwd\fR, as well as external commands available in the system's PATH.
+.SH OPTIONS
+.B simple_shell
+does not accept command-line options. It automatically determines whether to run in interactive mode (when launched without input redirection) or non-interactive mode (when launched with input redirection).
+.SH USAGE
+.PP
+.TP
+.B Interactive Mode:
+To start the shell interactively, simply run:
+.nf
+    $ ./simple_shell
+.fi
+The shell will display a prompt (e.g., "uwu") and wait for you to enter commands.
+.TP
+.B Non-Interactive Mode:
+You can run the shell with input provided via a script or pipe:
+.nf
+    $ echo "pwd" | ./simple_shell
+    $ ./simple_shell < commands.sh
+.fi
+In non-interactive mode, the shell processes the input commands line by line and exits when done.
+.SH BUILT-IN COMMANDS
+.B simple_shell
+supports the following built-in commands:
+.PP
+.TP
+.B cd [directory]
+Changes the current directory to the specified \fIdirectory\fR. If no directory is specified, the shell changes to the user's home directory. The special argument \fB-\fR returns the shell to the previous directory.
+.TP
+.B pwd
+Prints the current working directory.
+.TP
+.B exit
+Exits the shell with status code 0.
+.SH EXTERNAL COMMANDS
+.B simple_shell
+executes external commands by forking a child process. The child process then uses the \fBexecve\fR system call to run the command. The shell can execute any program available in the system's PATH, such as \fBls\fR, \fBecho\fR, or \fBcat\fR.
+.SH FILES
+.B simple_shell
+is composed of several source files:
+.PP
+.TP
+.B simple_shell.c
+Contains the \fBmain\fR function, which sets up the shell loop, reads user input, and determines whether to run in interactive or non-interactive mode.
+.TP
+.B execute_command.c
+Defines the \fBexecute_command\fR function, which parses and executes the command entered by the user.
+.TP
+.B execute_cd.c
+Implements the \fBcd\fR command, handling directory changes.
+.TP
+.B execute_pwd.c
+Implements the \fBpwd\fR command, which prints the current working directory.
+.TP
+.B execute_ls.c
+Handles the \fBls\fR command by invoking the external \fB/bin/ls\fR command.
+.TP
+.B simple_shell.h
+The header file containing function prototypes and necessary includes for the shell's operation.
+.SH EXAMPLES
+.PP
+.B Interactive Mode Example:
+.nf
+    $ ./simple_shell
+    $ pwd
+    /home/user
+    $ ls
+    file1.txt  file2.txt
+    $ cd ..
+    $ exit
+.fi
+.PP
+.B Non-Interactive Mode Example:
+.nf
+    $ echo "pwd" | ./simple_shell
+    /home/user
+.fi
+.SH ENVIRONMENT VARIABLES
+.B simple_shell
+uses the following environment variables:
+.PP
+.TP
+.B HOME
+Specifies the path to the user's home directory. Used by the \fBcd\fR command when no directory is specified.
+.TP
+.B OLDPWD
+Stores the previous working directory, used by the \fBcd -\fR command.
+.TP
+.B PATH
+Defines the directories where the shell looks for external commands.
+.SH DIAGNOSTICS
+.B simple_shell
+returns the exit status of the last executed command. If a command cannot be found, the shell prints an error message and returns a non-zero status.
+.SH BUGS
+No known bugs. Please report any issues to 9753@holbertonstudents.com.
+9823@holbertonstudents.com
+.SH AUTHOR
+Developed by Noam Travert & Guillaume Bouvier
+.SH COPYRIGHT
+Copyright © 2024 . All rights reserved.
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR zsh (1)
 
