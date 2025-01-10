@@ -3,32 +3,33 @@
 /**
  * tokenize_input - Splits the input into tokens
  * @input: The input string
+ * 
  * Return: Array of strings (tokens)
  */
 char **tokenize_input(char *input)
 {
-    char **tokens, *token;
-    int token_count = 0;
+	char **tokens, *token;
+	int token_count = 0;
 
-    tokens = malloc(sizeof(char *) * MAX_TOKENS);
-    if (!tokens)
-        return (NULL);
+	tokens = malloc(sizeof(char *) * MAX_TOKENS);
+	if (!tokens)
+		return (NULL);
 
-    token = strtok(input, " \t\n");
-    while (token && token_count < MAX_TOKENS - 1)
-    {
-        tokens[token_count] = strdup(token);
-        if (!tokens[token_count])
-        {
-            free_args(tokens);
-            return (NULL);
-        }
-        token_count++;
-        token = strtok(NULL, " \t\n");
-    }
-    tokens[token_count] = NULL;
+	token = strtok(input, " \t\n");
+	while (token && token_count < MAX_TOKENS - 1)
+	{
+		tokens[token_count] = strdup(token);
+		if (!tokens[token_count])
+		{
+			free_args(tokens);
+			return (NULL);
+		}
+		token_count++;
+		token = strtok(NULL, " \t\n");
+	}
+	tokens[token_count] = NULL;
 
-    return (tokens);
+	return (tokens);
 }
 
 /**
@@ -37,17 +38,17 @@ char **tokenize_input(char *input)
  */
 void free_args(char **args)
 {
-    int i = 0;
+	int i = 0;
 
-    if (!args)
-        return;
+	if (!args)
+		return;
 
-    while (args[i])
-    {
-        free(args[i]);
-        i++;
-    }
-    free(args);
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
 }
 
 /**
@@ -56,76 +57,75 @@ void free_args(char **args)
  */
 void print_env(char **env)
 {
-    int i = 0;
+	int i = 0;
 
-    if (!env)
-        return;
+	if (!env)
+		return;
 
-    while (env[i])
-    {
-        write(STDOUT_FILENO, env[i], strlen(env[i]));
-        write(STDOUT_FILENO, "\n", 1);
-        i++;
-    }
+	while (env[i])
+	{
+		write(STDOUT_FILENO, env[i], strlen(env[i]));
+		write(STDOUT_FILENO, "\n", 1);
+		i++;
+	}
 }
 
 /**
  * get_command_path - Gets the full path of a command
  * @command: The command to find
  * @env: The environment variables
+ * 
  * Return: Full path of the command or NULL if not found
  */
 char *get_command_path(char *command, char **env)
 {
-    char *path = NULL, *path_copy, *dir, *full_path;
-    struct stat st;
-    int i = 0;
+	char *path = NULL, *path_copy, *dir, *full_path;
+	struct stat st;
+	int i = 0;
 
-    if (strchr(command, '/') != NULL)
-    {
-        if (stat(command, &st) == 0)
-            return (strdup(command));
-        return (NULL);
-    }
+	if (strchr(command, '/') != NULL)
+	{
+		if (stat(command, &st) == 0)
+			return (strdup(command));
+		return (NULL);
+	}
 
-    /* Find PATH in environment variables */
-    while (env[i])
-    {
-        if (strncmp(env[i], "PATH=", 5) == 0)
-        {
-            path = env[i] + 5;
-            break;
-        }
-        i++;
-    }
-    if (!path)
-        return (NULL);
+	/* Find PATH in environment variables */
+	while (env[i])
+	{
+		if (strncmp(env[i], "PATH=", 5) == 0)
+		{
+			path = env[i] + 5;
+			break;
+		}
+		i++;
+	}
+	if (!path)
+		return (NULL);
 
-    path_copy = strdup(path);
-    if (!path_copy)
-        return (NULL);
+	path_copy = strdup(path);
+	if (!path_copy)
+		return (NULL);
 
-    dir = strtok(path_copy, ":");
-    while (dir)
-    {
-        full_path = malloc(strlen(dir) + strlen(command) + 2);
-        if (!full_path)
-        {
-            free(path_copy);
-            return (NULL);
-        }
-        sprintf(full_path, "%s/%s", dir, command);
-        if (stat(full_path, &st) == 0)
-        {
-            free(path_copy);
-            return (full_path);
-        }
-        free(full_path);
-        dir = strtok(NULL, ":");
-    }
+	dir = strtok(path_copy, ":");
+	while (dir)
+	{
+		full_path = malloc(strlen(dir) + strlen(command) + 2);
+		if (!full_path)
+		{
+			free(path_copy);
+			return (NULL);
+		}
+		sprintf(full_path, "%s/%s", dir, command);
+		if (stat(full_path, &st) == 0)
+		{
+			free(path_copy);
+			return (full_path);
+		}
+		free(full_path);
+		dir = strtok(NULL, ":");
+	}
 
-    free(path_copy);
-    return (NULL);
+	free(path_copy);
+	return (NULL);
 }
-
-
